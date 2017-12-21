@@ -270,6 +270,51 @@ describeBy(DP5, Gender*sen_G)
 
 cor(DP1, DP2)
 
+COR_T <- (subset(DT, select=c(IND1, IND2, IND3, IND4, IND5, DP1, DP2, DP3, DP4, DP5)))
+cor(COR_T, method="pearson")
+# 2개 이상일 떈 subset을 통해 선택하고 분석을 한다.
+
+
+#Scatter plot - 종속변수간 -> 의미 없다.
+
+plot(DP1, DP2)
+plot(DP2, DP3)
+
+#Scatter plot - 종속변수와 독립변수간 
+
+plot(IND1, DP2, pch=1) #숫자에 따라서 다르다.
+plot(DP2, DP3)
+
+# MUltiple Regression
+
+reg1<- lm(DP1~IND1+IND2+IND3+IND4+IND5, data=DT)
+summary(reg1)
+# t와 estimate std(잔차)와 차이가 많이 날수록 PR 즉 차이가 크다.
+reg2<- lm(DP1~IND1+IND2+IND3+IND4+IND5, data=DT)
+summary(reg2)
+head(DT)
+# INSC 1~5 / DNSC 1~5
+regSC1<- lm(DNSC1~INSC1+INSC2+INSC3+INSC4+INSC5, data=DT)
+summary(regSC1)
+# 설문 분석시 이것이 더 의미가 있다. -> 팩터를 평가한 것을 쓰기 때문
+
+
+
+# 잔차 분석
+
+par(mfrow=c(2,2)) #2행2열의 그래프
+plot(reg2)
+# 오른쪽 위 그래프 정규성에 거의 일치하지만 끝과 시작이 벗어나있다. Q_Q그래프 중요
+# 빨간선이 직선 그리고 그 위에 점들이 따라가야 한다.
+
+resid<-residuals(reg2) # 잔차값 -> 차이가 많이 나면 정확한 값이 맞는지 확인해야 한다. / 데이터 패턴에 따른 모형을 만들어야한다.
+shapiro.test(resid) # 잔차가 정규선에 따르는 지 보는 것. 0.2보다 커야 따르는 것이다.
+
+# 다중 공선성
+#정교선 #잔차 등분산 qq plot 확인 /먼저 회귀분석 / 잔차의 공선성 확인(vif) / 잔차가 큰것에 대한 확인(residuals)
+install.packages("car")
+library(car)
+vif(reg2) # 10이 넘어가면 안된다. 다중공선성 다중회귀에서 0.7이상이거나 vif 값이 10이상이면 변수를 뺀다.
 
 
 
@@ -282,6 +327,3 @@ cor(DP1, DP2)
 
 
 
-
-
- 
